@@ -16,7 +16,16 @@ struct ListBootcamp: View {
     ]
     @State var showAlert = false
     @State var listBg = Color.pink
-
+    
+    //    @State var alertTitle: String = ""
+    //    @State var alertMessage: String = ""
+    @State var alertType: MyAlerts? = nil
+    
+    enum MyAlerts {
+        case success
+        case error
+    }
+    
     var body: some View {
         NavigationView {
             List {
@@ -33,7 +42,7 @@ struct ListBootcamp: View {
                     Text("Fruits")
                         .foregroundColor(.green)
                 }
-
+                
                 Section(
                     header: Text("Places")
                 ) {
@@ -46,20 +55,21 @@ struct ListBootcamp: View {
                     .onDelete(perform: deletePlace)
                 }
                 
-                Button("Show alert") {
+                Button("Show error alert") {
+                    alertType = .error
+                    //                    alertTitle = "Error"
+                    //                    alertMessage = "An error occured while uploading your video, please try again later"
                     showAlert.toggle()
                 }
-                .alert(isPresented: $showAlert, content: {
-                    Alert(
-                        title: Text("Hello"),
-                        message: Text("This is an alert"),
-                        primaryButton: .destructive(Text("DELETE"), action: {
-                            listBg = Color.yellow
-                        }),
-                        secondaryButton: .cancel()
-                    )
-                })
-
+                .alert(isPresented: $showAlert, content: getAlert)
+                Button("Show  success alert") {
+//                    alertType = .success
+                    //                    alertTitle = "Success"
+                    //                    alertMessage = "Your video has been uploaded successfully"
+                    showAlert.toggle()
+                }
+                .alert(isPresented: $showAlert, content: getAlert)
+                
             }
             //            .listStyle(.inset)
             .navigationTitle("Products")
@@ -71,13 +81,35 @@ struct ListBootcamp: View {
         }
         .accentColor(.red)
     }
-
+    
     func deleteFruit(indexSet: IndexSet) {
         fruits.remove(atOffsets: indexSet)
     }
-
+    
     func deletePlace(indexSet: IndexSet) {
         places.remove(atOffsets: indexSet)
+    }
+    
+    func getAlert() -> Alert {
+        switch alertType {
+        case .success:
+            Alert(title: Text("Success"), message: Text("Your video has been uploaded successfully"))
+        case .error:
+            Alert(title: Text("Error"), message: Text("An error occured while uploading your video, please try again later"))
+        default:
+            Alert(title: Text("ERROR"))
+        }
+        //        Alert(title: Text(alertTitle),
+        //              message: Text(alertMessage),
+        //              dismissButton: .default(Text("OK")))
+        //        Alert(
+        //            title: Text("Hello"),
+        //            message: Text("This is an alert"),
+        //            primaryButton: .destructive(Text("Delete"), action: {
+        //                listBg = Color.yellow
+        //            }),
+        //            secondaryButton: .cancel()
+        //        )
     }
 }
 
